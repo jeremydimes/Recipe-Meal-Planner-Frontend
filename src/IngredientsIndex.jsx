@@ -15,21 +15,12 @@ export function IngredientsIndex(props) {
               <div className="card-body">
                 <h5 className="card-title">{ingredient.name}</h5>
                 <p className="card-text"></p>
-                <button onClick={() => props.onShowIngredient(ingredient)}>
-                  More info
+                <button
+                  className="btn btn-primary"
+                  onClick={() => props.onCreatePantryItem(ingredient)}
+                >
+                  Add To Pantry
                 </button>
-                <a
-                  className="btn btn-primary"
-                  onClick={() => props.onSelectIngredient(ingredient)}
-                >
-                  More info More info modal
-                </a>
-                <a
-                  className="btn btn-primary"
-                  href={`/ingredients/${ingredient.id}`}
-                >
-                  Go to show page
-                </a>
               </div>
             </div>
           </div>

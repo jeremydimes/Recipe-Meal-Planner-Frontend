@@ -1,11 +1,11 @@
-import { Signup } from "./Signup";
-import { Login } from "./Login";
 import { LogoutLink } from "./LogoutLink";
 import axios from "axios";
 import { useState, useEffect } from "react";
 import { IngredientsIndex } from "./IngredientsIndex";
 import { IngredientsNew } from "./IngredientsNew";
 import { IngredientsShow } from "./IngredientsShow";
+import { PantryItemsShow } from "./PantryItemsShow";
+
 import { Modal } from "./Modal";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
@@ -14,6 +14,10 @@ import { PantryItemsIndex } from "./PantryItemsIndex";
 
 export function Home() {
   const [ingredients, setIngredients] = useState([]);
+
+  const [isPantryItemsShowVisible, setIsPantryItemsShowVisible] =
+    useState(false);
+  const [currentPantryItem, setCurrentPantryItem] = useState({});
   const [isIngredientsShowVisible, setIsIngredientsShowVisible] =
     useState(false);
   const [currentIngredient, setCurrentIngredient] = useState({});
@@ -30,7 +34,7 @@ export function Home() {
   const handleIndexPantryItems = () => {
     console.log("handleIndexPantryItems");
     axios.get("http://localhost:3000/pantry_items.json").then((response) => {
-      console.log(response.data);
+      console.log("Pantry", response.data);
       setPantryItems(response.data);
     });
   };
@@ -45,44 +49,64 @@ export function Home() {
       });
   };
 
-  const handleCreatePantryItemsNew = (params, successCallback) => {
-    console.log("handleCreatePantyItemsNew", params);
+  const handleCreatePantryItem = (ingredient) => {
+    console.log("handleCreatePantyItemsNew", ingredient);
     axios
-      .post("http://localhost:3000/pantryitemsnew.json", params)
+      .post("http://localhost:3000/pantry_items.json", {
+        ingredient_id: ingredient.id,
+      })
       .then((response) => {
         setPantryItems([...pantryItems, response.data]);
-        successCallback();
       });
   };
+
+  const handleShowPantryItem = (PantryItem) => {
+    console.log("handleShowPantryItem", PantryItem);
+    setIsPantryItemsShowVisible(true);
+    setCurrentPantryItem(PantryItem);
+  };
+
+  const handleClose = () => {
+    console.log("handleClose");
+    setIsPantryItemsShowVisible(false);
+  };
+
   const handleShowIngredient = (ingredient) => {
     console.log("handleShowIngredient", ingredient);
     setIsIngredientsShowVisible(true);
     setCurrentIngredient(ingredient);
   };
 
-  const handleClose = () => {
+  const handleCloseIngredients = () => {
     console.log("handleClose");
     setIsIngredientsShowVisible(false);
   };
   console.log("hello", ingredients);
+
   useEffect(handleIndexIngredients, []);
   useEffect(handleIndexPantryItems, []);
 
   return (
     <div>
-      <PantryItemsIndex pantryItems={pantryItems} />
-      <Calendar />
-      <Signup />
-      <Login />
-      <LogoutLink />
-      <IngredientsNew onCreateIngredient={handleCreateIngredient} />
-      <PantryItemsNew onCreatePantryItemsNew={handleCreatePantryItemsNew} />
       <IngredientsIndex
         ingredients={ingredients}
         onShowIngredient={handleShowIngredient}
+        onCreatePantryItem={handleCreatePantryItem}
       />
-      <Modal show={isIngredientsShowVisible} onClose={handleClose}>
+      <IngredientsNew onCreateIngredient={handleCreateIngredient} />
+      <PantryItemsIndex
+        pantryItems={pantryItems}
+        onShowPantryItem={handleShowPantryItem}
+      />
+
+      <Calendar />
+
+      <Modal show={isIngredientsShowVisible} onClose={handleCloseIngredients}>
         <IngredientsShow ingredient={currentIngredient} />
+      </Modal>
+
+      <Modal show={isPantryItemsShowVisible} onClose={handleClose}>
+        <PantryItemsShow pantryItem={currentPantryItem} />
       </Modal>
     </div>
   );
