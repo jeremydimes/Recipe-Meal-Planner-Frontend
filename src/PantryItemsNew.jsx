@@ -1,4 +1,4 @@
-export function PantryitemsNew() {
+export function PantryItemsNew() {
   return (
     <div>
       <h1>New Pantry_item</h1>

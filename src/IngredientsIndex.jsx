@@ -13,8 +13,8 @@ export function IngredientsIndex(props) {
                 alt="..."
               />
               <div className="card-body">
-                <h5 className="card-title">{ingredient.title}</h5>
-                <p className="card-text">Chef: {ingredient.chef}</p>
+                <h5 className="card-title">{ingredient.name}</h5>
+                <p className="card-text"></p>
                 <button onClick={() => props.onShowIngredient(ingredient)}>
                   More info
                 </button>
